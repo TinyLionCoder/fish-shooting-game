@@ -2,19 +2,57 @@
 .App {
   text-align: center;
   width: 100%;
-  max-width: 800px;
+  max-width: 1200px;
   margin: auto;
+  padding: 0 10px;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+.Header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.Header h1 {
+  margin-bottom: 5px;
+  color: #1a73e8;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.GameInfo {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.ScoreDisplay, .LevelDisplay, .ShotsDisplay, .HighScoreDisplay {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
 }
 
 .ScoreDisplay {
-  font-size: 2em;
-  margin-bottom: 15px;
-  color: #ffd700;
-  text-shadow: 1px 1px 2px black;
+  color: #1a73e8;
+}
+
+.HighScoreDisplay {
+  color: #f1c232;
+}
+
+.ShotsDisplay {
+  color: #cc0000;
 }
 
 .GameArea {
   width: 100%;
+  min-width: 1200px;
   height: 500px;
   background-color: #3b4b61;
   border: 5px solid #1a1d24;
@@ -23,12 +61,13 @@
   cursor: crosshair;
   background-image: linear-gradient(to bottom, #3b4b61, #2a3542);
   box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
 }
 
 .Launcher {
   position: absolute;
   bottom: 80px;
-  left: 160px;
+  left: 580px; /* Adjusted for centered position */
   width: 50px;
   height: 80px;
   display: flex;
@@ -39,6 +78,16 @@
 
 .Launcher_Indicator {
   font-size: 2.5em;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 .Projectile {
@@ -62,6 +111,48 @@
   animation: swim 3s ease-in-out infinite;
 }
 
+@keyframes swim {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-8px) rotate(3deg);
+  }
+  50% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(8px) rotate(-3deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+@keyframes swimFast {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-12px) rotate(5deg);
+  }
+  50% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(12px) rotate(-5deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+.Target.bonusTarget {
+  font-size: 2.2em;
+  animation: swimFast 2s ease-in-out infinite;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.7); /* Gold glow for bonus targets */
+}
+
 .Target.hit {
   opacity: 0.3;
   transform: scale(1.5);
@@ -76,191 +167,139 @@
   pointer-events: none;
 }
 
-.ResetButton {
-  margin-top: 15px;
-  padding: 10px 20px;
-  font-size: 1em;
-  cursor: pointer;
-  background-color: #61dafb;
-  border: none;
-  border-radius: 5px;
-  color: #282c34;
-  font-weight: bold;
-}
-
-.ResetButton:hover {
-  background-color: #4fa8c8;
-}
-
-.ResetButton:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-@keyframes swim {
-  0% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-8px);
-  }
-
-  100% {
-    transform: translateY(0px);
-  }
-}
-
-.Bubbles {
+/* Power meter styling */
+.PowerMeter {
   position: absolute;
-  bottom: 0;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 15px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.PowerIndicator {
+  height: 100%;
+  transition: width 0.1s ease-out;
+  border-radius: 10px;
+}
+
+/* Power-up styling */
+.PowerUp {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2em;
+  background-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+  animation: glow 1.5s infinite alternate, float 3s infinite ease-in-out;
+  z-index: 2;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  }
+  to {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.9);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.ActionButton {
+  padding: 12px 24px;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 1.2em;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  margin: 10px;
+}
+
+.ActionButton:hover {
+  background-color: #0d5bdd;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Game status panels */
+.GameOverPanel, .LevelCompletePanel, .GameWonPanel, .TutorialOverlay {
+  position: absolute;
+  top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  z-index: 100;
+  border-radius: 10px;
 }
 
-.bubble {
-  position: absolute;
-  bottom: -20px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
-  animation: rise 6s linear infinite;
+.GameOverPanel h2, .LevelCompletePanel h2, .GameWonPanel h2 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-@keyframes rise {
-  0% {
-    transform: translateY(0) scale(0.8);
-    opacity: 0;
-  }
-
-  50% {
-    opacity: 0.6;
-  }
-
-  100% {
-    transform: translateY(-600px) scale(1.2);
-    opacity: 0;
-  }
+.GameOverPanel {
+  background-color: rgba(204, 0, 0, 0.8);
 }
 
-/* Randomized bubble positions and timings */
-.bubble:nth-child(1) {
-  left: 10%;
-  animation-delay: 0s;
+.LevelCompletePanel {
+  background-color: rgba(26, 115, 232, 0.8);
 }
 
-.bubble:nth-child(2) {
-  left: 20%;
-  animation-delay: 1s;
+.GameWonPanel {
+  background-color: rgba(52, 168, 83, 0.8);
 }
 
-.bubble:nth-child(3) {
-  left: 30%;
-  animation-delay: 2s;
+/* Tutorial styling */
+.TutorialOverlay {
+  background-color: rgba(0, 0, 0, 0.85);
 }
 
-.bubble:nth-child(4) {
-  left: 40%;
-  animation-delay: 3s;
+.TutorialContent {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  border-radius: 15px;
+  max-width: 500px;
+  text-align: left;
 }
 
-.bubble:nth-child(5) {
-  left: 50%;
-  animation-delay: 4s;
+.TutorialContent h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #1a73e8;
 }
 
-.bubble:nth-child(6) {
-  left: 60%;
-  animation-delay: 5s;
+.TutorialContent ul {
+  margin-bottom: 20px;
+  padding-left: 20px;
 }
 
-.bubble:nth-child(7) {
-  left: 70%;
-  animation-delay: 6s;
-}
-
-.bubble:nth-child(8) {
-  left: 80%;
-  animation-delay: 7s;
-}
-
-.bubble:nth-child(9) {
-  left: 90%;
-  animation-delay: 8s;
-}
-
-.bubble:nth-child(10) {
-  left: 25%;
-  animation-delay: 2.5s;
-}
-
-.bubble:nth-child(11) {
-  left: 35%;
-  animation-delay: 3.5s;
-}
-
-.bubble:nth-child(12) {
-  left: 45%;
-  animation-delay: 4.5s;
-}
-
-.bubble:nth-child(13) {
-  left: 55%;
-  animation-delay: 5.5s;
-}
-
-.bubble:nth-child(14) {
-  left: 65%;
-  animation-delay: 6.5s;
-}
-
-.bubble:nth-child(15) {
-  left: 75%;
-  animation-delay: 7.5s;
-}
-
-.bubble:nth-child(16) {
-  left: 85%;
-  animation-delay: 8.5s;
-}
-
-.bubble:nth-child(17) {
-  left: 15%;
-  animation-delay: 1.5s;
-}
-
-.bubble:nth-child(18) {
-  left: 5%;
-  animation-delay: 0.5s;
-}
-
-.bubble:nth-child(19) {
-  left: 95%;
-  animation-delay: 9s;
-}
-
-.bubble:nth-child(20) {
-  left: 50%;
-  animation-delay: 10s;
-}
-
-.bubble {
-  animation-timing-function: ease-in;
-  width: 8px;
-  height: 8px;
-}
-
-.bubble:nth-child(odd) {
-  width: 6px;
-  height: 6px;
-}
-
-.bubble:nth-child(even) {
-  width: 12px;
-  height: 12px;
+.TutorialContent li {
+  margin-bottom: 10px;
+  line-height: 1.5;
 }
