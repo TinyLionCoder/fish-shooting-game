@@ -17,7 +17,7 @@ const LandingPage = () => {
       
       {/* Header */}
       <header className={styles.header}>
-        <div className={styles.logo}>Fish Shooter</div>
+        <div className={styles.logo}>Fish Shoote</div>
         <nav>
           <ul className={styles['nav-links']}>
             <li>Home</li>
