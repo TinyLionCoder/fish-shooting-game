@@ -1,4 +1,4 @@
-//@ts-nocheck
+
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import styles from "./FishShootingGameStyles.module.css";
 
@@ -58,7 +58,7 @@ const levelTargets = {
   ],
 };
 
-const getDistance = (a, b) => {
+const getDistance = (a: any, b: any) => {
   return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
 };
 
@@ -76,17 +76,22 @@ const FishShootingGame = () => {
   });
   const [targets, setTargets] = useState(levelTargets[1]);
   const [isAiming, setIsAiming] = useState(false);
-  const [aimStartPos, setAimStartPos] = useState(null);
-  const [aimEndPos, setAimEndPos] = useState(null);
+  const [aimStartPos, setAimStartPos] = useState<{ x: number; y: number } | null>(null);
+  const [aimEndPos, setAimEndPos] = useState<{ x: number; y: number } | null>(null);
   const [shotsRemaining, setShotsRemaining] = useState(10);
   const [gameStatus, setGameStatus] = useState("playing"); // "playing", "level_complete", "game_over", "game_won"
   const [targetMovementEnabled, setTargetMovementEnabled] = useState(false);
   const [showTutorial, setShowTutorial] = useState(true);
-  const [powerUp, setPowerUp] = useState(null);
+  const [powerUp, setPowerUp] = useState<{
+    x: number;
+    y: number;
+    type: "extraShot" | "doubleDamage";
+    collected: boolean;
+  } | null>(null);
 
-  const gameAreaRef = useRef(null);
-  const animationFrameId = useRef(null);
-  const targetAnimationFrameId = useRef(null);
+  const gameAreaRef = useRef<HTMLDivElement>(null);
+  const animationFrameId = useRef<number | null>(null);
+  const targetAnimationFrameId = useRef<number | null>(null);
   const isDragging = useRef(false);
 
   // Load high score from localStorage
@@ -106,9 +111,9 @@ const FishShootingGame = () => {
   }, [score, highScore]);
 
   // Reset game for new level
-  const startLevel = (levelNum) => {
+  const startLevel = (levelNum: 1 | 2 | 3) => {
     setLevel(levelNum);
-    setTargets(levelTargets[levelNum].map(t => ({ ...t, hit: false })));
+    setTargets(levelTargets[levelNum].map(t => ({ ...t, hit: false, speed: 'speed' in t ? t.speed : 1 })));
     setShotsRemaining(10 + (levelNum - 1) * 2); // More shots for higher levels
     setGameStatus("playing");
     
@@ -118,7 +123,7 @@ const FishShootingGame = () => {
 
   // Load level when level changes
   useEffect(() => {
-    startLevel(level);
+    startLevel(level as 1 | 2 | 3);
   }, [level]);
 
   // Check game status after each target is hit or shot is taken
@@ -154,7 +159,7 @@ const FishShootingGame = () => {
           if (target.hit) return target;
 
           // Default movement pattern
-          let newX = target.x + (Math.sin(Date.now() / 1000 * (target.speed || 1)) * 1.5);
+          let newX = target.x + (Math.sin(Date.now() / 1000 * ('speed' in target ? (target as { speed: number }).speed : 1)) * 1.5);
           
           // Make sure targets stay in bounds
           if (newX < 0) newX = 0;
@@ -262,7 +267,7 @@ const FishShootingGame = () => {
 
     // Check collision with power-up
     if (powerUp && !powerUp.collected && getDistance(projPos, powerUp) < PROJECTILE_RADIUS + 20) {
-      setPowerUp(prev => ({ ...prev, collected: true }));
+      setPowerUp(prev => prev ? { ...prev, collected: true } : prev);
 
       // Apply power-up effect
       if (powerUp.type === "extraShot") {
@@ -290,14 +295,15 @@ const FishShootingGame = () => {
     };
   }, [projectile.active, gameLoop]);
 
-  const getCoords = (e) => {
+  const getCoords = (e: any) => {
+    if (!gameAreaRef.current) return { x: 0, y: 0 }; // Default fallback
     const rect = gameAreaRef.current.getBoundingClientRect();
     const x = e.touches ? e.touches[0].clientX : e.clientX;
     const y = e.touches ? e.touches[0].clientY : e.clientY;
     return { x: x - rect.left, y: y - rect.top };
   };
 
-  const handleMouseDown = (e) => {
+  const handleMouseDown = (e: any) => {
     if (gameStatus !== "playing" || projectile.active || showTutorial) return;
     const coords = getCoords(e);
     if (getDistance(coords, LAUNCHER_POS) < 50) {
@@ -308,7 +314,7 @@ const FishShootingGame = () => {
     }
   };
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: any) => {
     if (!isDragging.current || !isAiming) return;
     const coords = getCoords(e);
     setAimEndPos(coords);
@@ -338,7 +344,7 @@ const FishShootingGame = () => {
 
   const nextLevel = () => {
     if (level < MAX_LEVEL) {
-      startLevel(level + 1);
+      startLevel((level + 1) as 1 | 2 | 3);
     }
   };
 
@@ -448,7 +454,7 @@ const FishShootingGame = () => {
               top: `${target.y - TARGET_RADIUS}px`,
               width: `${TARGET_RADIUS * 2}px`,
               height: `${TARGET_RADIUS * 2}px`,
-              animationDuration: target.speed ? `${3 / target.speed}s` : "3s"
+              animationDuration: 'speed' in target && typeof target.speed === 'number' ? `${3 / target.speed}s` : "3s"
             }}
           >
             {!target.hit && target.emoji}
