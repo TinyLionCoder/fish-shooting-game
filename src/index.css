@@ -8,9 +8,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #282c34; /* Dark background for the page */
   color: white;
-  overflow: hidden; /* Prevent scrolling */
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  overflow: auto;
 }

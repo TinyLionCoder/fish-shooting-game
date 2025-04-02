@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import "./App.css";
+import styles from "./FishShootingGameStyles.module.css";
 
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 500;
@@ -195,12 +195,12 @@ const FishShootingGame: React.FC = () => {
   const allTargetsHit = targets.every((t) => t.hit);
 
   return (
-    <div className="App">
+    <div className={styles.App}>
       <h1>Fish Shooting Game 🐟</h1>
-      <div className="ScoreDisplay">Score: {score}</div>
+      <div className={styles.ScoreDisplay}>Score: {score}</div>
       <div
         ref={gameAreaRef}
-        className="GameArea"
+        className={styles.GameArea}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
@@ -208,12 +208,12 @@ const FishShootingGame: React.FC = () => {
         onTouchMove={handleMouseMove}
         onTouchEnd={handleMouseUp}
       >
-        <div className="Launcher">
-          {!projectile.active && <span className="Launcher-Indicator">🐟</span>}
+        <div className={styles.Launcher}>
+          {!projectile.active && <span className={styles.Launcher_Indicator}>🐟</span>}
         </div>
         {aimLine && (
           <div
-            className="AimingLine"
+            className={styles.AimingLine}
             style={{
               width: `${aimLine.length}px`,
               transform: `translate(${aimLine.x}px, ${aimLine.y}px) rotate(${aimLine.angle}deg)`,
@@ -222,7 +222,7 @@ const FishShootingGame: React.FC = () => {
         )}
         {projectile.active && (
           <div
-            className="Projectile"
+            className={styles.Projectile}
             style={{
               left: `${projectile.x - PROJECTILE_RADIUS}px`,
               top: `${projectile.y - PROJECTILE_RADIUS}px`,
@@ -235,7 +235,7 @@ const FishShootingGame: React.FC = () => {
         {targets.map((target) => (
           <div
             key={target.id}
-            className={`Target ${target.hit ? "hit" : ""}`}
+            className={`${styles.Target} ${target.hit ? styles.hit : ""}`}
             style={{
               left: `${target.x - TARGET_RADIUS}px`,
               top: `${target.y - TARGET_RADIUS}px`,
@@ -246,18 +246,18 @@ const FishShootingGame: React.FC = () => {
             {!target.hit && target.emoji}
           </div>
         ))}
-        <div className="Bubbles">
+        <div className={styles.Bubbles}>
           {[...Array(20)].map((_, i) => (
             <div
               key={i}
-              className="bubble"
+              className={styles.bubble}
               style={{ "--i": i } as React.CSSProperties}
             />
           ))}
         </div>
       </div>
       <button
-        className="ResetButton"
+        className={styles.ResetButton}
         onClick={handleReset}
         disabled={projectile.active && !allTargetsHit}
       >

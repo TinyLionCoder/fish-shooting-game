@@ -1,9 +1,8 @@
-/* src/App.css */
+/* FishShootingGameStyles.module.css */
 .App {
   text-align: center;
   width: 100%;
   max-width: 800px;
-  /* Max game width */
   margin: auto;
 }
 
@@ -11,27 +10,19 @@
   font-size: 2em;
   margin-bottom: 15px;
   color: #ffd700;
-  /* Gold color */
   text-shadow: 1px 1px 2px black;
 }
 
 .GameArea {
   width: 100%;
   height: 500px;
-  /* Fixed game height */
   background-color: #3b4b61;
-  /* Dark blue-grey water/cave */
   border: 5px solid #1a1d24;
-  /* Darker border */
   position: relative;
-  /* Crucial for positioning elements inside */
   overflow: hidden;
-  /* Hide elements that go outside */
   cursor: crosshair;
   background-image: linear-gradient(to bottom, #3b4b61, #2a3542);
-  /* Simple gradient */
   box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
-  /* Inner shadow for depth */
 }
 
 .Launcher {
@@ -44,46 +35,37 @@
   justify-content: center;
   align-items: flex-end;
   z-index: 10;
-  /* Ensure it's above other elements if needed */
 }
 
-.Launcher-Indicator {
+.Launcher_Indicator {
   font-size: 2.5em;
-  /* Fish Emoji size */
 }
 
 .Projectile {
   position: absolute;
   font-size: 2em;
-  /* Fish Emoji size */
-  /* Adjust transform-origin if needed for rotation */
   transform-origin: center center;
   transition: transform 0.016s linear;
-  /* Basic smoothing - physics loop handles position */
   z-index: 5;
-  /* Add a slight shadow */
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .Target {
   position: absolute;
   font-size: 1.8em;
-  /* Target Fish Emoji size */
-  /*background-color: rgba(255, 0, 0, 0.3);  Optional: faint background for hitbox vis */
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1;
   transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-  /* Fade out effect */
   animation: swim 3s ease-in-out infinite;
 }
 
 .Target.hit {
-  opacity: 0;
+  opacity: 0.3;
   transform: scale(1.5);
-  /* Grow slightly when hit */
+  animation: none;
 }
 
 .AimingLine {
@@ -92,7 +74,6 @@
   transform-origin: 0 0;
   z-index: 9;
   pointer-events: none;
-  /* Prevent line from interfering with mouse events */
 }
 
 .ResetButton {
@@ -137,7 +118,6 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  /* allows clicks to pass through */
   overflow: hidden;
   z-index: 1;
 }
@@ -283,10 +263,4 @@
 .bubble:nth-child(even) {
   width: 12px;
   height: 12px;
-}
-
-
-.Target.hit {
-  opacity: 0.3;
-  animation: none;
 }
