@@ -79,7 +79,7 @@ const FishShootingGame = () => {
   const [aimStartPos, setAimStartPos] = useState(null);
   const [aimEndPos, setAimEndPos] = useState(null);
   const [shotsRemaining, setShotsRemaining] = useState(10);
-  const [gameStatus, setGameStatus] = useState("playing"); // "playing", "level_complete", "game_over"
+  const [gameStatus, setGameStatus] = useState("playing"); // "playing", "level_complete", "game_over", "game_won"
   const [targetMovementEnabled, setTargetMovementEnabled] = useState(false);
   const [showTutorial, setShowTutorial] = useState(true);
   const [powerUp, setPowerUp] = useState(null);
@@ -120,6 +120,29 @@ const FishShootingGame = () => {
   useEffect(() => {
     startLevel(level);
   }, [level]);
+
+  // Check game status after each target is hit or shot is taken
+  useEffect(() => {
+    // Only check when game is in playing state
+    if (gameStatus !== "playing" || projectile.active) return;
+    
+    const allTargetsHit = targets.every(t => t.hit);
+    
+    // If all targets are hit, advance to next level or win the game
+    if (allTargetsHit) {
+      if (level < MAX_LEVEL) {
+        setGameStatus("level_complete");
+      } else {
+        setGameStatus("game_won");
+      }
+      return;
+    }
+    
+    // If out of shots and not all targets hit, game over
+    if (shotsRemaining <= 0 && !allTargetsHit) {
+      setGameStatus("game_over");
+    }
+  }, [targets, shotsRemaining, level, gameStatus, projectile.active]);
 
   // Handle target movement
   useEffect(() => {
@@ -193,20 +216,7 @@ const FishShootingGame = () => {
         newX < 0 ||
         newX > GAME_WIDTH
       ) {
-        // Check if out of shots
-        if (shotsRemaining <= 1) {
-          const allHit = targets.every(t => t.hit);
-          if (allHit) {
-            if (level < MAX_LEVEL) {
-              setGameStatus("level_complete");
-            } else {
-              setGameStatus("game_won");
-            }
-          } else {
-            setGameStatus("game_over");
-          }
-        }
-
+        // Projectile is out of bounds, reset it
         return {
           ...prev,
           active: false,
@@ -229,7 +239,7 @@ const FishShootingGame = () => {
     });
 
     animationFrameId.current = requestAnimationFrame(gameLoop);
-  }, [shotsRemaining, targets, level]);
+  }, []);
 
   useEffect(() => {
     if (!projectile.active) return;
