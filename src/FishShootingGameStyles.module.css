@@ -32,7 +32,10 @@
   border-radius: 10px;
 }
 
-.ScoreDisplay, .LevelDisplay, .ShotsDisplay, .HighScoreDisplay {
+.ScoreDisplay,
+.LevelDisplay,
+.ShotsDisplay,
+.HighScoreDisplay {
   font-size: 1.2em;
   font-weight: bold;
   color: #333;
@@ -67,7 +70,8 @@
 .Launcher {
   position: absolute;
   bottom: 80px;
-  left: 580px; /* Adjusted for centered position */
+  left: 580px;
+  /* Adjusted for centered position */
   width: 50px;
   height: 80px;
   display: flex;
@@ -82,9 +86,12 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.1);
   }
@@ -115,15 +122,19 @@
   0% {
     transform: translateY(0px) rotate(0deg);
   }
+
   25% {
     transform: translateY(-8px) rotate(3deg);
   }
+
   50% {
     transform: translateY(0px) rotate(0deg);
   }
+
   75% {
     transform: translateY(8px) rotate(-3deg);
   }
+
   100% {
     transform: translateY(0px) rotate(0deg);
   }
@@ -133,15 +144,19 @@
   0% {
     transform: translateY(0px) rotate(0deg);
   }
+
   25% {
     transform: translateY(-12px) rotate(5deg);
   }
+
   50% {
     transform: translateY(0px) rotate(0deg);
   }
+
   75% {
     transform: translateY(12px) rotate(-5deg);
   }
+
   100% {
     transform: translateY(0px) rotate(0deg);
   }
@@ -150,7 +165,8 @@
 .Target.bonusTarget {
   font-size: 2.2em;
   animation: swimFast 2s ease-in-out infinite;
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.7); /* Gold glow for bonus targets */
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+  /* Gold glow for bonus targets */
 }
 
 .Target.hit {
@@ -207,15 +223,19 @@
   from {
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
   }
+
   to {
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.9);
   }
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-10px);
   }
@@ -241,7 +261,10 @@
 }
 
 /* Game status panels */
-.GameOverPanel, .LevelCompletePanel, .GameWonPanel, .TutorialOverlay {
+.GameOverPanel,
+.LevelCompletePanel,
+.GameWonPanel,
+.TutorialOverlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -257,7 +280,9 @@
   border-radius: 10px;
 }
 
-.GameOverPanel h2, .LevelCompletePanel h2, .GameWonPanel h2 {
+.GameOverPanel h2,
+.LevelCompletePanel h2,
+.GameWonPanel h2 {
   font-size: 2.5em;
   margin-bottom: 20px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -302,4 +327,262 @@
 .TutorialContent li {
   margin-bottom: 10px;
   line-height: 1.5;
+}
+
+/* Mobile Styles for FishShootingGameStyles.module.css */
+
+/* Base mobile adjustments (tablets and phones) */
+@media (max-width: 1200px) {
+  .App {
+    padding: 0 5px;
+  }
+
+  .GameArea {
+    min-width: unset;
+    width: 100%;
+    height: 400px;
+    /* Reduced height */
+    overflow: hidden;
+  }
+
+  
+
+  .GameInfo {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .ScoreDisplay,
+  .LevelDisplay,
+  .ShotsDisplay,
+  .HighScoreDisplay {
+    font-size: 1em;
+    flex: 1 0 45%;
+    /* Two items per row */
+    text-align: center;
+    padding: 5px 0;
+  }
+
+  .PowerMeter {
+    width: 150px;
+  }
+
+  .TutorialContent {
+    max-width: 90%;
+    padding: 20px;
+  }
+}
+
+/* Phone-specific adjustments */
+@media (max-width: 767px) {
+  .Header h1 {
+    font-size: 1.5rem;
+    margin-top: 5px;
+  }
+
+  .GameArea {
+    height: 350px;
+    /* Further reduced height */
+    border-width: 3px;
+  }
+
+  .Launcher_Indicator {
+    font-size: 2em;
+  }
+
+  .Target {
+    font-size: 1.5em;
+  }
+
+  .Target.bonusTarget {
+    font-size: 1.8em;
+  }
+
+  .Projectile {
+    font-size: 1.7em;
+  }
+
+  .PowerUp {
+    width: 35px;
+    height: 35px;
+    font-size: 1.7em;
+  }
+
+  .ActionButton {
+    padding: 10px 20px;
+    font-size: 1.1em;
+  }
+
+  .GameOverPanel h2,
+  .LevelCompletePanel h2,
+  .GameWonPanel h2 {
+    font-size: 2em;
+  }
+
+  .TutorialContent h2 {
+    font-size: 1.5em;
+  }
+
+  .TutorialContent li {
+    font-size: 0.9em;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .GameArea {
+    height: 300px;
+  }
+
+  .ScoreDisplay,
+  .LevelDisplay,
+  .ShotsDisplay,
+  .HighScoreDisplay {
+    font-size: 0.9em;
+  }
+
+  .Launcher {
+    bottom: 50px;
+  }
+
+  .PowerMeter {
+    width: 120px;
+    height: 12px;
+  }
+
+  .Target {
+    font-size: 1.3em;
+  }
+
+  .Target.bonusTarget {
+    font-size: 1.6em;
+  }
+
+  .GameOverPanel h2,
+  .LevelCompletePanel h2,
+  .GameWonPanel h2 {
+    font-size: 1.8em;
+  }
+}
+
+/* Touch device optimization */
+@media (hover: none) {
+  .ActionButton:hover {
+    /* Remove hover effects on touch devices */
+    transform: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #1a73e8;
+  }
+
+  /* Add active state for touch feedback */
+  .ActionButton:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    background-color: #0d5bdd;
+  }
+
+  /* Make touch targets larger */
+  .Launcher {
+    width: 60px;
+    height: 90px;
+  }
+}
+
+/* Landscape orientation for mobile */
+@media (max-width: 920px) and (orientation: landscape) {
+  .GameArea {
+    height: 260px;
+    /* Shorter to fit landscape mode */
+  }
+
+  .Header {
+    margin-bottom: 5px;
+  }
+
+  .Header h1 {
+    font-size: 1.3rem;
+    margin: 2px 0;
+  }
+
+  .GameInfo {
+    padding: 5px;
+    margin-bottom: 5px;
+  }
+
+  .TutorialContent {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+}
+
+/* Game calculations adjustments */
+/*
+Note: You'll need to update your game logic code to make the following changes:
+
+1. Adjust GAME_WIDTH and GAME_HEIGHT constants to be relative to container size
+2. Update target positions based on the relative size
+3. Update collision detection to account for different screen sizes
+4. Consider adding touch-specific controls
+
+Example implementation:
+
+const gameAreaRef = useRef<HTMLDivElement>(null);
+const [gameSize, setGameSize] = useState({ width: GAME_WIDTH, height: GAME_HEIGHT });
+
+// Set game size based on container
+useEffect(() => {
+  const updateSize = () => {
+    if (gameAreaRef.current) {
+      const gameArea = gameAreaRef.current;
+      const width = gameArea.clientWidth;
+      const height = gameArea.clientHeight;
+      setGameSize({ width, height });
+      
+      // Update launcher position
+      const newLauncherPos = {
+        x: width / 2,
+        y: height - (height * 0.15) // 15% from bottom
+      };
+      // ... update other positions accordingly
+    }
+  };
+  
+  window.addEventListener('resize', updateSize);
+  updateSize(); // Initial sizing
+  
+  return () => window.removeEventListener('resize', updateSize);
+}, []);
+*/
+
+/* Accessibility improvements */
+.ActionButton {
+  min-height: 44px;
+  /* Minimum touch target size */
+}
+
+/* Orientation change handling - prevent jumps */
+@media screen and (orientation: portrait),
+screen and (orientation: landscape) {
+
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+/* Support for notched phones */
+@supports (padding: max(0px)) {
+  .GameArea {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
 }
