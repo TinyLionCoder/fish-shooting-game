@@ -92,7 +92,7 @@ const FishShootingGame = () => {
   const gameAreaRef = useRef<HTMLDivElement>(null);
   const [gameSize, setGameSize] = useState(getInitialGameSize());
   const [launcherPos, setLauncherPos] = useState({ 
-    x: gameSize.width / 6, 
+    x: gameSize.width / 2, 
     y: gameSize.height - 100 
   });
 
