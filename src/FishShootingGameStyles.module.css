@@ -3,10 +3,12 @@
   text-align: center;
   width: 100%;
   max-width: 1200px;
-  margin: auto;
+  margin: 0 auto;
+  margin-top: 40px;
   padding: 0 10px;
   box-sizing: border-box;
   font-family: 'Arial', sans-serif;
+  position: relative;
 }
 
 .Header {
@@ -55,7 +57,6 @@
 
 .GameArea {
   width: 100%;
-  min-width: 1200px;
   height: 500px;
   background-color: #3b4b61;
   border: 5px solid #1a1d24;
@@ -65,19 +66,20 @@
   background-image: linear-gradient(to bottom, #3b4b61, #2a3542);
   box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
   border-radius: 10px;
+  margin: 0 auto;
 }
 
 .Launcher {
   position: absolute;
-  bottom: 80px;
-  left: 580px;
-  /* Adjusted for centered position */
   width: 50px;
-  height: 80px;
+  height: 50px;
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
   z-index: 10;
+  /* background-color: rgba(255, 255, 255, 0.2); */
+  border-radius: 50%;
+  /* Position is set dynamically in component */
 }
 
 .Launcher_Indicator {
@@ -86,12 +88,9 @@
 }
 
 @keyframes pulse {
-
-  0%,
-  100% {
+  0%, 100% {
     transform: scale(1);
   }
-
   50% {
     transform: scale(1.1);
   }
@@ -122,19 +121,15 @@
   0% {
     transform: translateY(0px) rotate(0deg);
   }
-
   25% {
     transform: translateY(-8px) rotate(3deg);
   }
-
   50% {
     transform: translateY(0px) rotate(0deg);
   }
-
   75% {
     transform: translateY(8px) rotate(-3deg);
   }
-
   100% {
     transform: translateY(0px) rotate(0deg);
   }
@@ -144,19 +139,15 @@
   0% {
     transform: translateY(0px) rotate(0deg);
   }
-
   25% {
     transform: translateY(-12px) rotate(5deg);
   }
-
   50% {
     transform: translateY(0px) rotate(0deg);
   }
-
   75% {
     transform: translateY(12px) rotate(-5deg);
   }
-
   100% {
     transform: translateY(0px) rotate(0deg);
   }
@@ -223,19 +214,15 @@
   from {
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
   }
-
   to {
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.9);
   }
 }
 
 @keyframes float {
-
-  0%,
-  100% {
+  0%, 100% {
     transform: translateY(0);
   }
-
   50% {
     transform: translateY(-10px);
   }
@@ -329,23 +316,154 @@
   line-height: 1.5;
 }
 
-/* Mobile Styles for FishShootingGameStyles.module.css */
+/* Bubbles for underwater effect */
+.Bubbles {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
 
-/* Base mobile adjustments (tablets and phones) */
+.bubble {
+  position: absolute;
+  bottom: -50px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  animation: bubble 15s linear infinite;
+}
+
+.bubble:nth-child(1) {
+  width: 30px;
+  height: 30px;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.bubble:nth-child(2) {
+  width: 15px;
+  height: 15px;
+  left: 20%;
+  animation-delay: 1s;
+  animation-duration: 10s;
+}
+
+.bubble:nth-child(3) {
+  width: 25px;
+  height: 25px;
+  left: 35%;
+  animation-delay: 5s;
+  animation-duration: 12s;
+}
+
+.bubble:nth-child(4) {
+  width: 20px;
+  height: 20px;
+  left: 50%;
+  animation-delay: 7s;
+  animation-duration: 8s;
+}
+
+.bubble:nth-child(5) {
+  width: 35px;
+  height: 35px;
+  left: 65%;
+  animation-delay: 3s;
+  animation-duration: 20s;
+}
+
+.bubble:nth-child(6) {
+  width: 18px;
+  height: 18px;
+  left: 80%;
+  animation-delay: 8s;
+  animation-duration: 14s;
+}
+
+.bubble:nth-child(7) {
+  width: 22px;
+  height: 22px;
+  left: 90%;
+  animation-delay: 4s;
+  animation-duration: 16s;
+}
+
+/* Generate more bubbles */
+.bubble:nth-child(8) { width: 17px; height: 17px; left: 15%; animation-delay: 6s; animation-duration: 9s; }
+.bubble:nth-child(9) { width: 28px; height: 28px; left: 25%; animation-delay: 9s; animation-duration: 13s; }
+.bubble:nth-child(10) { width: 12px; height: 12px; left: 40%; animation-delay: 2s; animation-duration: 7s; }
+.bubble:nth-child(11) { width: 32px; height: 32px; left: 55%; animation-delay: 0.5s; animation-duration: 18s; }
+.bubble:nth-child(12) { width: 15px; height: 15px; left: 70%; animation-delay: 7.5s; animation-duration: 11s; }
+.bubble:nth-child(13) { width: 24px; height: 24px; left: 85%; animation-delay: 2.5s; animation-duration: 15s; }
+.bubble:nth-child(14) { width: 10px; height: 10px; left: 5%; animation-delay: 4.5s; animation-duration: 6s; }
+.bubble:nth-child(15) { width: 26px; height: 26px; left: 30%; animation-delay: 8.5s; animation-duration: 17s; }
+.bubble:nth-child(16) { width: 20px; height: 20px; left: 45%; animation-delay: 3.5s; animation-duration: 12s; }
+.bubble:nth-child(17) { width: 14px; height: 14px; left: 60%; animation-delay: 5.5s; animation-duration: 9s; }
+.bubble:nth-child(18) { width: 30px; height: 30px; left: 75%; animation-delay: 1.5s; animation-duration: 19s; }
+.bubble:nth-child(19) { width: 16px; height: 16px; left: 95%; animation-delay: 6.5s; animation-duration: 10s; }
+.bubble:nth-child(20) { width: 22px; height: 22px; left: 10%; animation-delay: 9.5s; animation-duration: 13s; }
+
+@keyframes bubble {
+  0% {
+    bottom: -50px;
+    opacity: 0;
+  }
+  30% {
+    bottom: 30%;
+    opacity: 0.8;
+  }
+  100% {
+    bottom: 100%;
+    opacity: 0;
+  }
+}
+
+/* Responsive Media Queries */
+/* Tablets and small laptops */
 @media (max-width: 1200px) {
   .App {
     padding: 0 5px;
+    margin-top: 80px;
   }
 
   .GameArea {
-    min-width: unset;
-    width: 100%;
-    height: 400px;
-    /* Reduced height */
-    overflow: hidden;
+    border-width: 4px;
   }
 
-  
+  .Header h1 {
+    font-size: 1.8rem;
+  }
+
+  .GameInfo {
+    flex-wrap: wrap;
+  }
+
+  .ScoreDisplay,
+  .LevelDisplay,
+  .ShotsDisplay,
+  .HighScoreDisplay {
+    font-size: 1.1em;
+  }
+
+  .Launcher_Indicator {
+    font-size: 2.2em;
+  }
+
+  .PowerMeter {
+    width: 180px;
+  }
+}
+
+/* Large phones and small tablets */
+@media (max-width: 767px) {
+  .Header h1 {
+    font-size: 1.5rem;
+    margin-top: 5px;
+  }
 
   .GameInfo {
     flex-wrap: wrap;
@@ -363,26 +481,7 @@
     padding: 5px 0;
   }
 
-  .PowerMeter {
-    width: 150px;
-  }
-
-  .TutorialContent {
-    max-width: 90%;
-    padding: 20px;
-  }
-}
-
-/* Phone-specific adjustments */
-@media (max-width: 767px) {
-  .Header h1 {
-    font-size: 1.5rem;
-    margin-top: 5px;
-  }
-
   .GameArea {
-    height: 350px;
-    /* Further reduced height */
     border-width: 3px;
   }
 
@@ -408,6 +507,11 @@
     font-size: 1.7em;
   }
 
+  .PowerMeter {
+    width: 150px;
+    height: 12px;
+  }
+
   .ActionButton {
     padding: 10px 20px;
     font-size: 1.1em;
@@ -417,6 +521,11 @@
   .LevelCompletePanel h2,
   .GameWonPanel h2 {
     font-size: 2em;
+  }
+
+  .TutorialContent {
+    max-width: 90%;
+    padding: 20px;
   }
 
   .TutorialContent h2 {
@@ -430,8 +539,8 @@
 
 /* Small phones */
 @media (max-width: 480px) {
-  .GameArea {
-    height: 300px;
+  .Header h1 {
+    font-size: 1.3rem;
   }
 
   .ScoreDisplay,
@@ -445,9 +554,13 @@
     bottom: 50px;
   }
 
+  .Launcher_Indicator {
+    font-size: 1.8em;
+  }
+
   .PowerMeter {
     width: 120px;
-    height: 12px;
+    height: 10px;
   }
 
   .Target {
@@ -458,10 +571,45 @@
     font-size: 1.6em;
   }
 
+  .Projectile {
+    font-size: 1.5em;
+  }
+
   .GameOverPanel h2,
   .LevelCompletePanel h2,
   .GameWonPanel h2 {
     font-size: 1.8em;
+  }
+
+  .ActionButton {
+    padding: 8px 16px;
+    font-size: 1em;
+  }
+}
+
+/* Landscape orientation for mobile */
+@media (max-width: 920px) and (orientation: landscape) {
+  .GameInfo {
+    padding: 5px;
+    margin-bottom: 5px;
+  }
+
+  .Header {
+    margin-bottom: 5px;
+  }
+
+  .Header h1 {
+    font-size: 1.3rem;
+    margin: 2px 0;
+  }
+
+  .TutorialContent {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .ActionButton {
+    margin: 5px;
   }
 }
 
@@ -488,95 +636,9 @@
   }
 }
 
-/* Landscape orientation for mobile */
-@media (max-width: 920px) and (orientation: landscape) {
-  .GameArea {
-    height: 260px;
-    /* Shorter to fit landscape mode */
-  }
-
-  .Header {
-    margin-bottom: 5px;
-  }
-
-  .Header h1 {
-    font-size: 1.3rem;
-    margin: 2px 0;
-  }
-
-  .GameInfo {
-    padding: 5px;
-    margin-bottom: 5px;
-  }
-
-  .TutorialContent {
-    max-height: 70vh;
-    overflow-y: auto;
-  }
-}
-
-/* Game calculations adjustments */
-/*
-Note: You'll need to update your game logic code to make the following changes:
-
-1. Adjust GAME_WIDTH and GAME_HEIGHT constants to be relative to container size
-2. Update target positions based on the relative size
-3. Update collision detection to account for different screen sizes
-4. Consider adding touch-specific controls
-
-Example implementation:
-
-const gameAreaRef = useRef<HTMLDivElement>(null);
-const [gameSize, setGameSize] = useState({ width: GAME_WIDTH, height: GAME_HEIGHT });
-
-// Set game size based on container
-useEffect(() => {
-  const updateSize = () => {
-    if (gameAreaRef.current) {
-      const gameArea = gameAreaRef.current;
-      const width = gameArea.clientWidth;
-      const height = gameArea.clientHeight;
-      setGameSize({ width, height });
-      
-      // Update launcher position
-      const newLauncherPos = {
-        x: width / 2,
-        y: height - (height * 0.15) // 15% from bottom
-      };
-      // ... update other positions accordingly
-    }
-  };
-  
-  window.addEventListener('resize', updateSize);
-  updateSize(); // Initial sizing
-  
-  return () => window.removeEventListener('resize', updateSize);
-}, []);
-*/
-
 /* Accessibility improvements */
 .ActionButton {
-  min-height: 44px;
-  /* Minimum touch target size */
-}
-
-/* Orientation change handling - prevent jumps */
-@media screen and (orientation: portrait),
-screen and (orientation: landscape) {
-
-  html,
-  body {
-    height: 100%;
-    overflow: hidden;
-  }
-
-  body {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
+  min-height: 44px; /* Minimum touch target size */
 }
 
 /* Support for notched phones */
