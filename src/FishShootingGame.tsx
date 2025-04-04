@@ -1,87 +1,61 @@
+
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import styles from "./FishShootingGameStyles.module.css";
 
-// Dynamic game size constants
-const getInitialGameSize = () => {
-  // Default sizes for desktop
-  let width = 1200;
-  let height = 500;
-  
-  // Check if we're in a browser environment
-  if (typeof window !== 'undefined') {
-    // For mobile/smaller screens
-    if (window.innerWidth < 768) {
-      width = window.innerWidth - 20; // Account for padding
-      height = 350;
-    } 
-    // For tablets/medium screens
-    else if (window.innerWidth < 1200) {
-      width = window.innerWidth - 20;
-      height = 400;
-    }
-  }
-  
-  return { width, height };
-};
-
+const GAME_WIDTH = 1200; // Wider game area
+const GAME_HEIGHT = 500;
+const LAUNCHER_POS = { x: 600, y: GAME_HEIGHT - 120 }; // Centered launcher
+const GRAVITY = 0.35;
+const LAUNCH_POWER_MULTIPLIER = 0.25;
 const PROJECTILE_RADIUS = 20;
 const TARGET_RADIUS = 18;
 const MAX_LEVEL = 3;
 
-// Define targets for different levels with relative positioning
-const generateLevelTargets = (gameWidth: any, gameHeight: any) => {
-  // Helper function to scale positions based on game dimensions
-  const scalePosition = (baseX: any, baseY: any) => {
-    const xScale = gameWidth / 1200; // Original width
-    const yScale = gameHeight / 500; // Original height
-    return { x: baseX * xScale, y: baseY * yScale };
-  };
-
-  return {
-    1: [
-      { id: 1, ...scalePosition(100, 80), hit: false, emoji: "🐠", points: 10 },
-      { id: 2, ...scalePosition(150, 130), hit: false, emoji: "🐡", points: 10 },
-      { id: 3, ...scalePosition(300, 170), hit: false, emoji: "🐙", points: 10 },
-      { id: 4, ...scalePosition(200, 120), hit: false, emoji: "🐟", points: 10 },
-      { id: 5, ...scalePosition(250, 200), hit: false, emoji: "🦐", points: 10 },
-      { id: 6, ...scalePosition(180, 200), hit: false, emoji: "🦞", points: 10 },
-      { id: 7, ...scalePosition(370, 80), hit: false, emoji: "🦀", points: 10 },
-      { id: 8, ...scalePosition(280, 80), hit: false, emoji: "🐳", points: 10 },
-      { id: 9, ...scalePosition(950, 110), hit: false, emoji: "🐬", points: 10 },
-      { id: 10, ...scalePosition(850, 160), hit: false, emoji: "🦈", points: 10 },
-    ],
-    2: [
-      { id: 1, ...scalePosition(120, 90), hit: false, emoji: "🐠", points: 15 },
-      { id: 2, ...scalePosition(220, 150), hit: false, emoji: "🐡", points: 15 },
-      { id: 3, ...scalePosition(320, 80), hit: false, emoji: "🐙", points: 15 },
-      { id: 4, ...scalePosition(420, 120), hit: false, emoji: "🐟", points: 15 },
-      { id: 5, ...scalePosition(520, 180), hit: false, emoji: "🦐", points: 15 },
-      { id: 6, ...scalePosition(620, 100), hit: false, emoji: "🦞", points: 15 },
-      { id: 7, ...scalePosition(720, 160), hit: false, emoji: "🦀", points: 15 },
-      { id: 8, ...scalePosition(820, 90), hit: false, emoji: "🐳", points: 15 },
-      { id: 9, ...scalePosition(920, 130), hit: false, emoji: "🐬", points: 15 },
-      { id: 10, ...scalePosition(1020, 170), hit: false, emoji: "🦈", points: 15 },
-      { id: 11, ...scalePosition(400, 50), hit: false, emoji: "🐊", points: 25, speed: 1.5 },
-      { id: 12, ...scalePosition(700, 50), hit: false, emoji: "🦑", points: 25, speed: 1.5 },
-    ],
-    3: [
-      { id: 1, ...scalePosition(100, 70), hit: false, emoji: "🐠", points: 20, speed: 1.2 },
-      { id: 2, ...scalePosition(200, 140), hit: false, emoji: "🐡", points: 20, speed: 1.2 },
-      { id: 3, ...scalePosition(300, 80), hit: false, emoji: "🐙", points: 20, speed: 1.3 },
-      { id: 4, ...scalePosition(400, 150), hit: false, emoji: "🐟", points: 20, speed: 1.4 },
-      { id: 5, ...scalePosition(500, 90), hit: false, emoji: "🦐", points: 20, speed: 1.2 },
-      { id: 6, ...scalePosition(600, 160), hit: false, emoji: "🦞", points: 20, speed: 1.5 },
-      { id: 7, ...scalePosition(700, 100), hit: false, emoji: "🦀", points: 20, speed: 1.3 },
-      { id: 8, ...scalePosition(800, 170), hit: false, emoji: "🐳", points: 20, speed: 1.4 },
-      { id: 9, ...scalePosition(900, 110), hit: false, emoji: "🐬", points: 20, speed: 1.2 },
-      { id: 10, ...scalePosition(1000, 180), hit: false, emoji: "🦈", points: 20, speed: 1.5 },
-      { id: 11, ...scalePosition(250, 50), hit: false, emoji: "🐊", points: 30, speed: 2 },
-      { id: 12, ...scalePosition(450, 50), hit: false, emoji: "🦑", points: 30, speed: 2 },
-      { id: 13, ...scalePosition(650, 50), hit: false, emoji: "🐋", points: 30, speed: 1.8 },
-      { id: 14, ...scalePosition(850, 50), hit: false, emoji: "🦭", points: 30, speed: 1.9 },
-      { id: 15, ...scalePosition(550, 200), hit: false, emoji: "🦕", points: 50, speed: 1.5 },
-    ],
-  };
+// Define targets for different levels
+const levelTargets = {
+  1: [
+    { id: 1, x: 100, y: 80, hit: false, emoji: "🐠", points: 10 },
+    { id: 2, x: 150, y: 130, hit: false, emoji: "🐡", points: 10 },
+    { id: 3, x: 300, y: 170, hit: false, emoji: "🐙", points: 10 },
+    { id: 4, x: 200, y: 120, hit: false, emoji: "🐟", points: 10 },
+    { id: 5, x: 250, y: 200, hit: false, emoji: "🦐", points: 10 },
+    { id: 6, x: 180, y: 200, hit: false, emoji: "🦞", points: 10 },
+    { id: 7, x: 370, y: 80, hit: false, emoji: "🦀", points: 10 },
+    { id: 8, x: 280, y: 80, hit: false, emoji: "🐳", points: 10 },
+    { id: 9, x: 950, y: 110, hit: false, emoji: "🐬", points: 10 },
+    { id: 10, x: 850, y: 160, hit: false, emoji: "🦈", points: 10 },
+  ],
+  2: [
+    { id: 1, x: 120, y: 90, hit: false, emoji: "🐠", points: 15 },
+    { id: 2, x: 220, y: 150, hit: false, emoji: "🐡", points: 15 },
+    { id: 3, x: 320, y: 80, hit: false, emoji: "🐙", points: 15 },
+    { id: 4, x: 420, y: 120, hit: false, emoji: "🐟", points: 15 },
+    { id: 5, x: 520, y: 180, hit: false, emoji: "🦐", points: 15 },
+    { id: 6, x: 620, y: 100, hit: false, emoji: "🦞", points: 15 },
+    { id: 7, x: 720, y: 160, hit: false, emoji: "🦀", points: 15 },
+    { id: 8, x: 820, y: 90, hit: false, emoji: "🐳", points: 15 },
+    { id: 9, x: 920, y: 130, hit: false, emoji: "🐬", points: 15 },
+    { id: 10, x: 1020, y: 170, hit: false, emoji: "🦈", points: 15 },
+    { id: 11, x: 400, y: 50, hit: false, emoji: "🐊", points: 25, speed: 1.5 },
+    { id: 12, x: 700, y: 50, hit: false, emoji: "🦑", points: 25, speed: 1.5 },
+  ],
+  3: [
+    { id: 1, x: 100, y: 70, hit: false, emoji: "🐠", points: 20, speed: 1.2 },
+    { id: 2, x: 200, y: 140, hit: false, emoji: "🐡", points: 20, speed: 1.2 },
+    { id: 3, x: 300, y: 80, hit: false, emoji: "🐙", points: 20, speed: 1.3 },
+    { id: 4, x: 400, y: 150, hit: false, emoji: "🐟", points: 20, speed: 1.4 },
+    { id: 5, x: 500, y: 90, hit: false, emoji: "🦐", points: 20, speed: 1.2 },
+    { id: 6, x: 600, y: 160, hit: false, emoji: "🦞", points: 20, speed: 1.5 },
+    { id: 7, x: 700, y: 100, hit: false, emoji: "🦀", points: 20, speed: 1.3 },
+    { id: 8, x: 800, y: 170, hit: false, emoji: "🐳", points: 20, speed: 1.4 },
+    { id: 9, x: 900, y: 110, hit: false, emoji: "🐬", points: 20, speed: 1.2 },
+    { id: 10, x: 1000, y: 180, hit: false, emoji: "🦈", points: 20, speed: 1.5 },
+    { id: 11, x: 250, y: 50, hit: false, emoji: "🐊", points: 30, speed: 2 },
+    { id: 12, x: 450, y: 50, hit: false, emoji: "🦑", points: 30, speed: 2 },
+    { id: 13, x: 650, y: 50, hit: false, emoji: "🐋", points: 30, speed: 1.8 },
+    { id: 14, x: 850, y: 50, hit: false, emoji: "🦭", points: 30, speed: 1.9 },
+    { id: 15, x: 550, y: 200, hit: false, emoji: "🦕", points: 50, speed: 1.5 },
+  ],
 };
 
 const getDistance = (a: any, b: any) => {
@@ -89,26 +63,18 @@ const getDistance = (a: any, b: any) => {
 };
 
 const FishShootingGame = () => {
-  const gameAreaRef = useRef<HTMLDivElement>(null);
-  const [gameSize, setGameSize] = useState(getInitialGameSize());
-  const [launcherPos, setLauncherPos] = useState({ 
-    x: gameSize.width / 2, 
-    y: gameSize.height - 120
-  });
-
-  // Game state
   const [level, setLevel] = useState(1);
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [projectile, setProjectile] = useState({
-    x: launcherPos.x,
-    y: launcherPos.y,
+    x: LAUNCHER_POS.x,
+    y: LAUNCHER_POS.y,
     vx: 0,
     vy: 0,
     active: false,
     rotation: 0,
   });
-  const [targets, setTargets] = useState(generateLevelTargets(gameSize.width, gameSize.height)[1]);
+  const [targets, setTargets] = useState(levelTargets[1]);
   const [isAiming, setIsAiming] = useState(false);
   const [aimStartPos, setAimStartPos] = useState<{ x: number; y: number } | null>(null);
   const [aimEndPos, setAimEndPos] = useState<{ x: number; y: number } | null>(null);
@@ -123,54 +89,10 @@ const FishShootingGame = () => {
     collected: boolean;
   } | null>(null);
 
+  const gameAreaRef = useRef<HTMLDivElement>(null);
   const animationFrameId = useRef<number | null>(null);
   const targetAnimationFrameId = useRef<number | null>(null);
   const isDragging = useRef(false);
-  const GRAVITY = 0.35;
-  const LAUNCH_POWER_MULTIPLIER = 0.25;
-
-  // Handle window resize
-  useEffect(() => {
-    const handleResize = () => {
-      const newSize = getInitialGameSize();
-      setGameSize(newSize);
-      
-      // Update launcher position when game size changes
-      setLauncherPos({ 
-        x: newSize.width / 2, 
-        y: newSize.height - 80 
-      });
-      
-      // Reset projectile position
-      if (!projectile.active) {
-        setProjectile(prev => ({
-          ...prev,
-          x: newSize.width / 2,
-          y: newSize.height - 80
-        }));
-      }
-      
-      // Update target positions
-      if (level >= 1 && level <= MAX_LEVEL) {
-        const scaledTargets = generateLevelTargets(newSize.width, newSize.height)[level as 1 | 2 | 3];
-        setTargets(prev => {
-          return prev.map((target, index) => {
-            if (index < scaledTargets.length) {
-              return {
-                ...target,
-                x: scaledTargets[index].x,
-                y: scaledTargets[index].y,
-              };
-            }
-            return target;
-          });
-        });
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [gameSize.width, gameSize.height, level, projectile.active]);
 
   // Load high score from localStorage
   useEffect(() => {
@@ -191,8 +113,7 @@ const FishShootingGame = () => {
   // Reset game for new level
   const startLevel = (levelNum: 1 | 2 | 3) => {
     setLevel(levelNum);
-    const levelTargets = generateLevelTargets(gameSize.width, gameSize.height)[levelNum];
-    setTargets(levelTargets.map(t => ({ ...t, hit: false, speed: 'speed' in t ? t.speed : 1 })));
+    setTargets(levelTargets[levelNum].map(t => ({ ...t, hit: false, speed: 'speed' in t ? t.speed : 1 })));
     setShotsRemaining(10 + (levelNum - 1) * 2); // More shots for higher levels
     setGameStatus("playing");
     
@@ -203,7 +124,7 @@ const FishShootingGame = () => {
   // Load level when level changes
   useEffect(() => {
     startLevel(level as 1 | 2 | 3);
-  }, [level, gameSize.width, gameSize.height]);
+  }, [level]);
 
   // Check game status after each target is hit or shot is taken
   useEffect(() => {
@@ -237,13 +158,12 @@ const FishShootingGame = () => {
         return prevTargets.map(target => {
           if (target.hit) return target;
 
-          // Default movement pattern - scale with game width
-          let newX = target.x + (Math.sin(Date.now() / 1000 * ('speed' in target ? (target as { speed: number }).speed : 1)) * 1.5 * (gameSize.width / 1200));
+          // Default movement pattern
+          let newX = target.x + (Math.sin(Date.now() / 1000 * ('speed' in target ? (target as { speed: number }).speed : 1)) * 1.5);
           
-          // Make sure targets stay in bounds (with margin for visibility)
-          const marginX = TARGET_RADIUS * 2;
-          if (newX < marginX) newX = marginX;
-          if (newX > gameSize.width - marginX) newX = gameSize.width - marginX;
+          // Make sure targets stay in bounds
+          if (newX < 0) newX = 0;
+          if (newX > GAME_WIDTH) newX = GAME_WIDTH;
 
           return {
             ...target,
@@ -262,7 +182,7 @@ const FishShootingGame = () => {
         cancelAnimationFrame(targetAnimationFrameId.current);
       }
     };
-  }, [targetMovementEnabled, gameSize.width]);
+  }, [targetMovementEnabled]);
 
   // Randomly spawn power-ups
   useEffect(() => {
@@ -272,7 +192,7 @@ const FishShootingGame = () => {
       // 5% chance to spawn a power-up if none exists
       if (!powerUp && Math.random() < 0.05) {
         setPowerUp({
-          x: 100 + Math.random() * (gameSize.width - 200),
+          x: 100 + Math.random() * (GAME_WIDTH - 200),
           y: 50 + Math.random() * 150,
           type: Math.random() < 0.5 ? "extraShot" : "doubleDamage",
           collected: false
@@ -285,7 +205,7 @@ const FishShootingGame = () => {
     const powerUpTimer = setTimeout(spawnPowerUp, 5000);
     
     return () => clearTimeout(powerUpTimer);
-  }, [gameStatus, powerUp, gameSize.width]);
+  }, [gameStatus, powerUp]);
 
   const gameLoop = useCallback(() => {
     setProjectile((prev) => {
@@ -297,9 +217,9 @@ const FishShootingGame = () => {
       const angle = Math.atan2(newVy, prev.vx) * (180 / Math.PI);
 
       if (
-        newY > gameSize.height - PROJECTILE_RADIUS ||
+        newY > GAME_HEIGHT - PROJECTILE_RADIUS ||
         newX < 0 ||
-        newX > gameSize.width
+        newX > GAME_WIDTH
       ) {
         // Projectile is out of bounds, reset it
         return {
@@ -307,8 +227,8 @@ const FishShootingGame = () => {
           active: false,
           vx: 0,
           vy: 0,
-          x: launcherPos.x,
-          y: launcherPos.y,
+          x: LAUNCHER_POS.x,
+          y: LAUNCHER_POS.y,
           rotation: 0,
         };
       }
@@ -324,7 +244,7 @@ const FishShootingGame = () => {
     });
 
     animationFrameId.current = requestAnimationFrame(gameLoop);
-  }, [gameSize.height, gameSize.width, launcherPos.x, launcherPos.y]);
+  }, []);
 
   useEffect(() => {
     if (!projectile.active) return;
@@ -386,7 +306,7 @@ const FishShootingGame = () => {
   const handleMouseDown = (e: any) => {
     if (gameStatus !== "playing" || projectile.active || showTutorial) return;
     const coords = getCoords(e);
-    if (getDistance(coords, launcherPos) < 50) {
+    if (getDistance(coords, LAUNCHER_POS) < 50) {
       isDragging.current = true;
       setIsAiming(true);
       setAimStartPos(coords);
@@ -410,8 +330,8 @@ const FishShootingGame = () => {
     const dy = aimStartPos.y - aimEndPos.y;
 
     setProjectile({
-      x: launcherPos.x,
-      y: launcherPos.y,
+      x: LAUNCHER_POS.x,
+      y: LAUNCHER_POS.y,
       vx: dx * LAUNCH_POWER_MULTIPLIER,
       vy: dy * LAUNCH_POWER_MULTIPLIER,
       active: true,
@@ -447,10 +367,12 @@ const FishShootingGame = () => {
     aimLine = {
       length,
       angle: angle + 180,
-      x: launcherPos.x,
-      y: launcherPos.y,
+      x: LAUNCHER_POS.x,
+      y: LAUNCHER_POS.y,
     };
   }
+
+  const allTargetsHit = targets.every((t) => t.hit);
   
   // Calculate power level for UI display
   let powerLevel = 0;
@@ -459,13 +381,6 @@ const FishShootingGame = () => {
     const dy = aimStartPos.y - aimEndPos.y;
     powerLevel = Math.min(100, Math.sqrt(dx * dx + dy * dy) / 3);
   }
-
-  // Apply responsive styles to game area
-  const gameAreaStyle = {
-    width: '100%',
-    maxWidth: `${gameSize.width}px`,
-    height: `${gameSize.height}px`,
-  };
 
   return (
     <div className={styles.App}>
@@ -482,7 +397,6 @@ const FishShootingGame = () => {
       <div
         ref={gameAreaRef}
         className={styles.GameArea}
-        style={gameAreaStyle}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
@@ -490,14 +404,7 @@ const FishShootingGame = () => {
         onTouchMove={handleMouseMove}
         onTouchEnd={handleMouseUp}
       >
-        <div 
-          className={styles.Launcher}
-          style={{ 
-            position: 'absolute',
-            left: `${launcherPos.x - 25}px`, 
-            top: `${launcherPos.y - 25}px` 
-          }}
-        >
+        <div className={styles.Launcher}>
           {!projectile.active && <span className={styles.Launcher_Indicator}>🐟</span>}
         </div>
         
