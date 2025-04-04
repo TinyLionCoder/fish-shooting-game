@@ -93,7 +93,7 @@ const FishShootingGame = () => {
   const [gameSize, setGameSize] = useState(getInitialGameSize());
   const [launcherPos, setLauncherPos] = useState({ 
     x: gameSize.width / 2, 
-    y: gameSize.height - 100 
+    y: gameSize.height - 120
   });
 
   // Game state
